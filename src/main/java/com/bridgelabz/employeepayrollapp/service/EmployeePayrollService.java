@@ -11,7 +11,6 @@ import java.util.List;
 public class EmployeePayrollService implements IEmployeePayrollService {
 
     private List<EmployeePayrollData> employeePayrollList = new ArrayList<>();
-    private int empID;
 
     @Override
     public List<EmployeePayrollData> getEmployeePayrollData() {
@@ -25,18 +24,18 @@ public class EmployeePayrollService implements IEmployeePayrollService {
 
     @Override
     public EmployeePayrollData createEmployeePayrollData(EmployeePayrollDTO employeePayrollDTO) {
-        EmployeePayrollData employeePayrollData = this.getEmployeePayrollDataById(empID);
-        employeePayrollData.setName(employeePayrollDTO.name);
-        employeePayrollData.setSalary(employeePayrollDTO.salary);
-        employeePayrollList.set(empID - 1, employeePayrollData);
+        EmployeePayrollData employeePayrollData = new EmployeePayrollData(employeePayrollList.size() + 1,employeePayrollDTO );
+        employeePayrollList.add(employeePayrollData);
         return employeePayrollData;
     }
 
     @Override
     public EmployeePayrollData updateEmployeePayrollData(int empId, EmployeePayrollDTO employeePayrollDTO) {
-        EmployeePayrollData empData = null;
-        empData = new EmployeePayrollData(1, employeePayrollDTO);
-        return empData;
+        EmployeePayrollData employeePayrollData = this.getEmployeePayrollDataById(empId);
+        employeePayrollData.setName(employeePayrollDTO.name);
+        employeePayrollData.setSalary(employeePayrollDTO.salary);
+        employeePayrollList.set(empId - 1,employeePayrollData);
+        return employeePayrollData;
     }
 
     @Override
