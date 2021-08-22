@@ -23,13 +23,14 @@ public class EmployeePayrollService implements IEmployeePayrollService {
     @Override
     public List<EmployeePayrollData> getEmployeePayrollData() {
         log.info("Inside getEmployeePayrollData()");
-        return employeePayrollList;
+        return employeePayrollRepository.findAll();
     }
 
     @Override
     public EmployeePayrollData getEmployeePayrollDataById(int empId) {
         log.info("Inside getEmployeePayrollDataById()");
-        return employeePayrollList.stream().filter(employeePayrollData -> employeePayrollData.getEmployeeId() == empId).findFirst().orElseThrow(() -> new EmployeePayrollException("Employee Not Found"));
+        return employeePayrollRepository.findById(empId).orElseThrow(() -> new EmployeePayrollException("Employee with " +
+                "employee Id " + empId + " does not exist."));
     }
 
     @Override
@@ -44,15 +45,14 @@ public class EmployeePayrollService implements IEmployeePayrollService {
     public EmployeePayrollData updateEmployeePayrollData(int empId, EmployeePayrollDTO employeePayrollDTO) {
         log.info("Inside updateEmployeePayrollData()");
         EmployeePayrollData employeePayrollData = this.getEmployeePayrollDataById(empId);
-        employeePayrollData.setName(employeePayrollDTO.name);
-        employeePayrollData.setSalary(employeePayrollDTO.salary);
-        employeePayrollList.set(empId - 1, employeePayrollData);
-        return employeePayrollData;
+        employeePayrollData.updateEmployeePayrollData(employeePayrollDTO);
+        return employeePayrollRepository.save(employeePayrollData);
     }
 
     @Override
     public void deleteEmployeePayrollData(int empId) {
         log.info("Inside deleteEmployeePayrollData()");
-        employeePayrollList.remove(empId - 1);
+        EmployeePayrollData employeePayrollData = this.getEmployeePayrollDataById(empId);
+        employeePayrollRepository.delete(employeePayrollData);
     }
 }
