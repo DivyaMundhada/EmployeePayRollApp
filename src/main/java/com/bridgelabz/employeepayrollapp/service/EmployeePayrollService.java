@@ -1,6 +1,7 @@
 package com.bridgelabz.employeepayrollapp.service;
 
 import com.bridgelabz.employeepayrollapp.dto.EmployeePayrollDTO;
+import com.bridgelabz.employeepayrollapp.exceptions.EmployeePayrollException;
 import com.bridgelabz.employeepayrollapp.model.EmployeePayrollData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -23,13 +24,13 @@ public class EmployeePayrollService implements IEmployeePayrollService {
     @Override
     public EmployeePayrollData getEmployeePayrollDataById(int empId) {
         log.info("Inside getEmployeePayrollDataById()");
-        return employeePayrollList.get(empId - 1);
+        return employeePayrollList.stream().filter(employeePayrollData -> employeePayrollData.getEmployeeId() == empId).findFirst().orElseThrow(() -> new EmployeePayrollException("Employee Not Found"));
     }
 
     @Override
     public EmployeePayrollData createEmployeePayrollData(EmployeePayrollDTO employeePayrollDTO) {
         log.info("Inside createEmployeePayrollData()");
-        EmployeePayrollData employeePayrollData = new EmployeePayrollData(employeePayrollList.size() + 1,employeePayrollDTO );
+        EmployeePayrollData employeePayrollData = new EmployeePayrollData(employeePayrollList.size() + 1, employeePayrollDTO);
         employeePayrollList.add(employeePayrollData);
         return employeePayrollData;
     }
@@ -40,7 +41,7 @@ public class EmployeePayrollService implements IEmployeePayrollService {
         EmployeePayrollData employeePayrollData = this.getEmployeePayrollDataById(empId);
         employeePayrollData.setName(employeePayrollDTO.name);
         employeePayrollData.setSalary(employeePayrollDTO.salary);
-        employeePayrollList.set(empId - 1,employeePayrollData);
+        employeePayrollList.set(empId - 1, employeePayrollData);
         return employeePayrollData;
     }
 
